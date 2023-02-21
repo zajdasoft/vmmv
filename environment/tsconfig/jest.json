@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Jest tests",
+  "extends": "./react-library.json",
+  "compilerOptions": {
+    "types": ["node", "jest"]
+  }
+}

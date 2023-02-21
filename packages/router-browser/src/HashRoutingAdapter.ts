@@ -26,9 +26,9 @@ export default class HashRoutingAdapter implements IRoutingAdapter<BrowserQueryP
     return `#${path}`;
   }
 
-  parseDestination(path: string, context: PathContext): string[] | undefined {
+  parseDestination(path: string, context: PathContext): string[] {
     const parsed = getBrowserPathNodes(path);
-    return applyRelativePath(parsed, context);
+    return applyRelativePath(context, parsed);
   }
 
   onAfterNavigate(finalLocation: string): void {}

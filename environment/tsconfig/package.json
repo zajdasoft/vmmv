@@ -4,6 +4,7 @@
   "private": true,
   "files": [
     "base.json",
+    "jest.json",
     "react-library.json",
     "with-di.json"
   ]

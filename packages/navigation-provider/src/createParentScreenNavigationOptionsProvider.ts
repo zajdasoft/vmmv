@@ -14,8 +14,8 @@ export const createParentScreenNavigationOptionsProvider = <
   matchNavigation,
   findNavigationChild: (pathNode) => {
     for (const child of children) {
-      const [match, params] = child.navigationOptionsProvider.matchNavigation(pathNode);
-      if (match) return [child, params];
+      const params = child.navigationProvider.matchNavigation(pathNode);
+      if (params) return [child, params];
     }
 
     return undefined;

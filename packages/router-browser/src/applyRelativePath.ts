@@ -1,7 +1,7 @@
 export function applyRelativePath(absolute: string[], relative: string[]): string[] {
   // When the relative path starts with / it means it is not relative, but absolute.
   if (!relative[0]) return relative;
-  const copy = [...(absolute.length ? absolute : [""])];
+  const copy = [...absolute];
 
   for (const node of relative) {
     switch (node) {
@@ -19,5 +19,5 @@ export function applyRelativePath(absolute: string[], relative: string[]): strin
     }
   }
 
-  return ["", ...copy];
+  return copy;
 }

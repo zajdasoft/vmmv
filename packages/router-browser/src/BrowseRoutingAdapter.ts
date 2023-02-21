@@ -19,16 +19,16 @@ export default class BrowseRoutingAdapter implements IRoutingAdapter<BrowserQuer
   }
 
   joinPathWithQueryParams(path: string[], params: BrowserQueryParams): string {
-    return path.join("/") + (params && Object.keys(params).length ? `?${new URLSearchParams(params)}` : "");
+    return `/${path.join("/")}${(params && Object.keys(params).length ? `?${new URLSearchParams(params)}` : "")}`;
   }
 
   wrapLinkPath(path: string): string {
     return path;
   }
 
-  parseDestination(path: string, context: PathContext): string[] | undefined {
+  parseDestination(path: string, context: PathContext): string[] {
     const parsed = getBrowserPathNodes(path);
-    return applyRelativePath(parsed, context);
+    return applyRelativePath(context, parsed);
   }
 
   onBeforeNavigate(path: string[], params: BrowserQueryParams): boolean {

@@ -27,21 +27,15 @@ export default class Router<TQueryParams> {
 
   getPathLocation(path: string, queryParams: TQueryParams, context: PathContext): string {
     const absolute = this.adapter.parseDestination(path, context);
-    return absolute ? this.adapter.joinPathWithQueryParams(absolute, queryParams) : "";
+    return this.adapter.joinPathWithQueryParams(absolute, queryParams);
   }
 
   navigate(path: string, queryParams: TQueryParams, context: PathContext): void {
-    if (!this.root) throw Error("Unable to navigate when the root model is missing.");
     if (this.redirectCounter >= this.maxRedirectCount) {
-      throw Error("Navigation loop counter exceeded.");
+      throw new Error("Navigation loop counter exceeded.");
     }
 
     const absolute = this.adapter.parseDestination(path, context);
-    if (!absolute) {
-      this.root.notifyNavigationFailed(path);
-      return;
-    }
-
     if (!this.adapter.onBeforeNavigate(absolute, queryParams)) {
       return;
     }
@@ -64,9 +58,6 @@ export default class Router<TQueryParams> {
   }
 
   private go(nodes: string[], params: TQueryParams, path: string): void {
-    if (!this.root) throw Error("There must be a root set for the router.");
-    if (nodes[0]) throw Error(`Navigation must start from the root. Provided: ${path}`);
-
     const navigation: RouteNavigationItem<TQueryParams>[] = [{
       screen: this.root,
       pathNode: "",
@@ -74,15 +65,15 @@ export default class Router<TQueryParams> {
     }];
 
     let current: ScreenSearchResult<IScreen<TQueryParams>, TQueryParams> | undefined = [this.root, {}];
-    let provider: INavigationProvider<TQueryParams> = this.root.navigationOptionsProvider;
+    let provider: INavigationProvider<TQueryParams> = this.root.navigationProvider;
 
-    for (let i = 1; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
       if (!nodes[i]) continue;
       current = provider.findNavigationChild(nodes[i]);
       if (!current) break;
 
       const screen = getSearchedScreen(current);
-      screen.navigationOptionsProvider;
+      screen.navigationProvider;
       navigation.push({
         screen,
         pathParams: getSearchedParams(current),
@@ -119,20 +110,18 @@ export default class Router<TQueryParams> {
   })
 
   private executeNavigation(navigation: RouteNavigationItem<TQueryParams>[]) {
-    if (!this.root) throw Error("There must be a root set for the router.");
-
     for (let i = 0; i < navigation.length; i++) {
       const { screen, pathParams } = navigation[i];
       screen.navigationConsumer.consumeNavigation(this.createNavigationContext(navigation, i , pathParams));
     }
 
     const { screen: finalScreen } = navigation[navigation.length - 1];
-    finalScreen.navigationOptionsProvider.setNavigationFinalStep();
+    finalScreen.navigationProvider.setNavigationFinalStep();
 
     for (let i = navigation.length - 2; i >= 0; i--) {
       const { screen } = navigation[i];
       const { screen: next } = navigation[i + 1];
-      screen.navigationOptionsProvider.acceptNavigationChild(next);
+      screen.navigationProvider.acceptNavigationChild(next);
     }
   }
 
