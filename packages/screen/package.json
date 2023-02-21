@@ -1,0 +1,12 @@
+{
+  "name": "@vmmv/screen",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@vmmv/common": "workspace:^0.0.0"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "With DI",
+  "extends": "./react-library.json",
+  "compilerOptions": {
+    "types": ["reflect-metadata", "node"]
+  }
+}
