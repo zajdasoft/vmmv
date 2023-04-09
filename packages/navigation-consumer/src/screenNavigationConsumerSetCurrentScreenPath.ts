@@ -1,12 +1,12 @@
-import type { IScreen } from "@vmmv/screen";
+import type { ScreenBase } from "@vmmv/screen";
 import type { ScreenNavigationConsumerSetter } from "./ScreenNavigationConsumerSetter";
 
-export interface IScreenWithCurrentScreenPath<TQueryParams> extends IScreen<TQueryParams> {
-  currentScreenPath: IScreen<TQueryParams>[];
+export interface IScreenWithCurrentScreenPath extends ScreenBase {
+  currentScreenPath: ScreenBase[];
 }
 
-export function isScreenWithCurrentScreenPath<TQueryParams>(screen: IScreen<TQueryParams>): screen is IScreenWithCurrentScreenPath<TQueryParams> {
-  return Array.isArray((screen as IScreenWithCurrentScreenPath<TQueryParams>).currentScreenPath);
+export function isScreenWithCurrentScreenPath(screen: ScreenBase): screen is IScreenWithCurrentScreenPath {
+  return Array.isArray((screen as IScreenWithCurrentScreenPath).currentScreenPath);
 }
 
 export const screenNavigationConsumerSetCurrentScreenPath: ScreenNavigationConsumerSetter = (parent, ctx) => {

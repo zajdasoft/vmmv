@@ -1,10 +1,10 @@
-import type { IScreen } from "@vmmv/screen";
+import type { ScreenBase } from "@vmmv/screen";
 import type { ActionExecutioner } from "@vmmv/common";
 import { createFinalScreenNavigationOptionsProvider } from "./createFinalScreenNavigationOptionsProvider";
 import { createDefaultMatchNavigation } from "./createDefaultMatchNavigation";
 
-export const createDefaultFinalScreenNavigationOptionsProvider = <TScreen extends IScreen<TQueryParams>, TQueryParams>(
+export const createDefaultFinalScreenNavigationOptionsProvider = <TScreen extends ScreenBase, TQueryParams>(
   action: ActionExecutioner,
   parent: TScreen,
-  screenDescriptivePathNodeProvider: () => string,
-) => createFinalScreenNavigationOptionsProvider(action, parent, createDefaultMatchNavigation(screenDescriptivePathNodeProvider));
+  screenDescriptivePathnameProvider: () => string,
+) => createFinalScreenNavigationOptionsProvider(action, parent, createDefaultMatchNavigation(screenDescriptivePathnameProvider));

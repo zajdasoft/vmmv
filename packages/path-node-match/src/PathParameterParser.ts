@@ -1,7 +1,7 @@
 export enum PathTokenType {
-  literal = 1,
-  variable,
-  constraint,
+  literal = "literal",
+  variable = "variable",
+  constraint = "constant",
 }
 
 export type PathToken = {
@@ -10,7 +10,7 @@ export type PathToken = {
 }
 
 export default class PathParameterParser {
-  private pathNode = "";
+  private pathname = "";
   private index = 0;
   private token = "";
   private state = PathTokenType.literal;
@@ -32,12 +32,12 @@ export default class PathParameterParser {
     this.token = "";
   }
 
-  parse(pathNode: string) {
+  parse(pathname: string) {
     this.reset();
-    this.pathNode = pathNode;
+    this.pathname = pathname;
 
-    for (; this.index < pathNode.length; this.index++) {
-      const char = pathNode.charAt(this.index);
+    for (; this.index < pathname.length; this.index++) {
+      const char = pathname.charAt(this.index);
 
       switch (this.state) {
         case PathTokenType.literal:
@@ -110,6 +110,6 @@ export default class PathParameterParser {
   }
 
   private throwParseError(message: string) {
-    throw Error(`Path parse error: ${message} at index: ${this.index} of path: '${this.pathNode}'.`);
+    throw Error(`Path parse error: ${message} at index: ${this.index} of path: '${this.pathname}'.`);
   }
 }

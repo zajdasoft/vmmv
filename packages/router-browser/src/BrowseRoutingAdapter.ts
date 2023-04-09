@@ -1,10 +1,11 @@
-import type { IRoutingAdapter, PathContext } from "@vmmv/router";
-import type { BrowserQueryParams } from "./browser";
-import { getBrowserPathNodes, getBrowserQueryParamsFromString } from "./browser";
+import type { RoutingAdapter, PathContext } from "@vmmv/router";
+import type { QueryParams } from "@vmmv/screen";
+import { getBrowserPathnames, getBrowserQueryParamsFromString } from "./browser";
 import { applyRelativePath } from "./applyRelativePath";
+import { queryParamsToURLSearchParams } from "./queryParamsToURLSearchParams";
 
-export default class BrowseRoutingAdapter implements IRoutingAdapter<BrowserQueryParams> {
-  init(navigate: (nodes: string[], params: BrowserQueryParams, path: string) => void): () => void {
+export default class BrowseRoutingAdapter implements RoutingAdapter {
+  init(navigate: (nodes: string[], params: QueryParams, path: string) => void): () => void {
     const goHistoryLocation = () => {
       const path = window.location.pathname + window.location.search;
       const nodes = window.location.pathname.split("/");
@@ -18,8 +19,8 @@ export default class BrowseRoutingAdapter implements IRoutingAdapter<BrowserQuer
     return () => window.removeEventListener("popstate", goHistoryLocation);
   }
 
-  joinPathWithQueryParams(path: string[], params: BrowserQueryParams): string {
-    return `/${path.join("/")}${(params && Object.keys(params).length ? `?${new URLSearchParams(params)}` : "")}`;
+  joinPathWithQueryParams(path: string[], params: QueryParams): string {
+    return `/${path.join("/")}${(params && Object.keys(params).length ? `?${queryParamsToURLSearchParams(params)}` : "")}`;
   }
 
   wrapLinkPath(path: string): string {
@@ -27,11 +28,11 @@ export default class BrowseRoutingAdapter implements IRoutingAdapter<BrowserQuer
   }
 
   parseDestination(path: string, context: PathContext): string[] {
-    const parsed = getBrowserPathNodes(path);
+    const parsed = getBrowserPathnames(path);
     return applyRelativePath(context, parsed);
   }
 
-  onBeforeNavigate(path: string[], params: BrowserQueryParams): boolean {
+  onBeforeNavigate(path: string[], params: QueryParams): boolean {
     return true;
   }
 

@@ -44,30 +44,30 @@ export default class PathNodeMatch {
   private readonly tokens: PathToken[];
   private readonly regex: RegExp;
 
-  constructor(public readonly pathNode: string) {
-    this.tokens = parser.parse(pathNode);
+  constructor(public readonly pathname: string) {
+    this.tokens = parser.parse(pathname);
     this.regex = buildRegex(this.tokens);
   }
 
-  match(pathNode: string): ScreenMatchResult {
-    const result = this.regex.exec(pathNode);
-    if (!result) return [false, {}];
-    return [true, result.groups ?? {}];
+  match(pathname: string): ScreenMatchResult {
+    const result = this.regex.exec(pathname);
+    if (!result) return undefined;
+    return result.groups;
   }
 
   build(params: PathParams) {
-    let pathNode = "";
+    let pathname = "";
     for (let i = 0; i < this.tokens.length; i++) {
       const token = this.tokens[i];
       switch (token.type) {
         case PathTokenType.literal:
-          pathNode += token.value;
+          pathname += token.value;
           break;
 
         case PathTokenType.variable:
           const name = token.value;
           if (!(name in params)) throw Error(`Unable to find path parameter: ${token.value}`);
-          pathNode += params[name];
+          pathname += params[name];
           break;
 
         case PathTokenType.constraint:
@@ -75,10 +75,10 @@ export default class PathNodeMatch {
       }
     }
 
-    if (!this.regex.test(pathNode)) {
-      throw Error(`The path node value '${pathNode}' doesn't match the path node criteria ${this.regex}`);
+    if (!this.regex.test(pathname)) {
+      throw Error(`The path node value '${pathname}' doesn't match the path node criteria ${this.regex}`);
     }
 
-    return pathNode;
+    return pathname;
   }
 }

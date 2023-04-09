@@ -1,6 +1,6 @@
 import { PathNodeMatch } from "@vmmv/path-node-match";
 
-export const createDefaultMatchNavigation = (screenDescriptivePathNodeProvider: () => string) => (pathNode: string) => {
-  const match = new PathNodeMatch(screenDescriptivePathNodeProvider());
-  return match.match(pathNode);
+export const createDefaultMatchNavigation = (screenDescriptivePathnameProvider: () => string) => (pathname: string) => {
+  const match = new PathNodeMatch(screenDescriptivePathnameProvider());
+  return match.match(pathname);
 }

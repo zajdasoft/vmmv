@@ -1,36 +1,42 @@
 import type {
-  INavigationContext,
-  INavigationErrorScreen,
-  INavigationProvider,
-  IScreen,
+  ScreenNavigationContext,
+  NavigationErrorScreen,
+  NavigationProvider,
+  ScreenBase,
   Navigator,
   PathParams,
+  QueryParams,
   ScreenSearchResult
 } from "@vmmv/screen";
-import { getSearchedParams, getSearchedScreen, isNavigationErrorScreen } from "@vmmv/screen";
+import {
+  getScreenRoutingNavigationContext,
+  getSearchedParams,
+  getSearchedScreen,
+  isNavigationErrorScreen
+} from "@vmmv/screen";
 import type { PathContext } from "./PathContext";
 import type { Middleware, MiddlewareParams } from "./Middleware";
-import type { IRoutingAdapter } from "./IRoutingAdapter";
+import type { RoutingAdapter } from "./RoutingAdapter";
 import type { RouteNavigationItem } from "./RouteNavigationItem";
 
-type ErrorScreenResult<TQueryParams> = [RouteNavigationItem<TQueryParams>[], INavigationErrorScreen<TQueryParams>];
+type ErrorScreenResult = [RouteNavigationItem[], NavigationErrorScreen];
 
-export default class Router<TQueryParams> {
-  private readonly middlewares: Middleware<TQueryParams>[] = [];
+export default class Router {
+  private readonly middlewares: Middleware[] = [];
   maxRedirectCount = 20;
   private finalLocation = "/";
   private redirectCounter = 0;
 
   constructor(
-    private readonly root: INavigationErrorScreen<TQueryParams>,
-    private readonly adapter: IRoutingAdapter<TQueryParams>) {}
+    private readonly root: NavigationErrorScreen,
+    private readonly adapter: RoutingAdapter) {}
 
-  getPathLocation(path: string, queryParams: TQueryParams, context: PathContext): string {
+  getPathLocation(path: string, queryParams: QueryParams, context: PathContext): string {
     const absolute = this.adapter.parseDestination(path, context);
     return this.adapter.joinPathWithQueryParams(absolute, queryParams);
   }
 
-  navigate(path: string, queryParams: TQueryParams, context: PathContext): void {
+  navigate(path: string, queryParams: QueryParams, context: PathContext): void {
     if (this.redirectCounter >= this.maxRedirectCount) {
       throw new Error("Navigation loop counter exceeded.");
     }
@@ -52,20 +58,20 @@ export default class Router<TQueryParams> {
     this.adapter.init(this.go);
   }
 
-  addMiddleware(middleware: Middleware<TQueryParams>): this {
+  addMiddleware(middleware: Middleware): this {
     this.middlewares.push(middleware);
     return this;
   }
 
-  private go(nodes: string[], params: TQueryParams, path: string): void {
-    const navigation: RouteNavigationItem<TQueryParams>[] = [{
+  private go = (nodes: string[], params: QueryParams, path: string) => {
+    const navigation: RouteNavigationItem[] = [{
       screen: this.root,
-      pathNode: "",
+      pathname: "",
       pathParams: {},
     }];
 
-    let current: ScreenSearchResult<IScreen<TQueryParams>, TQueryParams> | undefined = [this.root, {}];
-    let provider: INavigationProvider<TQueryParams> = this.root.navigationProvider;
+    let current: ScreenSearchResult<ScreenBase> | undefined = [this.root, {}];
+    let provider: NavigationProvider = getScreenRoutingNavigationContext(this.root).provider;
 
     for (let i = 0; i < nodes.length; i++) {
       if (!nodes[i]) continue;
@@ -73,11 +79,10 @@ export default class Router<TQueryParams> {
       if (!current) break;
 
       const screen = getSearchedScreen(current);
-      screen.navigationProvider;
       navigation.push({
         screen,
         pathParams: getSearchedParams(current),
-        pathNode: nodes[i],
+        pathname: nodes[i],
       });
     }
 
@@ -88,10 +93,9 @@ export default class Router<TQueryParams> {
 
     this.executeNavigation(finalNavigation);
     if (isError) errorScreen.notifyNavigationFailed(path);
-
   }
 
-  private getErrorNavigation(navigation: RouteNavigationItem<TQueryParams>[]): ErrorScreenResult<TQueryParams> {
+  private getErrorNavigation(navigation: RouteNavigationItem[]): ErrorScreenResult {
     for (let i = navigation.length - 1; i >= 0; i--) {
       const {screen} = navigation[i];
       if (isNavigationErrorScreen(screen)) {
@@ -102,31 +106,31 @@ export default class Router<TQueryParams> {
     return [[navigation[0]], this.root];
   }
 
-  private createNavigationContext = (navigation: RouteNavigationItem<TQueryParams>[], pathLength: number, pathParams: PathParams): INavigationContext<TQueryParams> => ({
+  private createNavigationContext = (navigation: RouteNavigationItem[], pathLength: number, pathParams: PathParams): ScreenNavigationContext => ({
     getNavigator: () => this.createNavigator(navigation, pathLength),
-    getCurrentPathNode: () => navigation[pathLength - 1].pathNode,
+    getCurrentPathname: () => navigation[pathLength - 1].pathname,
     getPathParams: () => pathParams,
     getScreenPath: () => navigation.map(x => x.screen),
   })
 
-  private executeNavigation(navigation: RouteNavigationItem<TQueryParams>[]) {
+  private executeNavigation(navigation: RouteNavigationItem[]) {
     for (let i = 0; i < navigation.length; i++) {
       const { screen, pathParams } = navigation[i];
-      screen.navigationConsumer.consumeNavigation(this.createNavigationContext(navigation, i , pathParams));
+      getScreenRoutingNavigationContext(screen).consumer.consumeNavigation(this.createNavigationContext(navigation, i , pathParams));
     }
 
     const { screen: finalScreen } = navigation[navigation.length - 1];
-    finalScreen.navigationProvider.setNavigationFinalStep();
+    getScreenRoutingNavigationContext(finalScreen).provider.setNavigationFinalStep();
 
     for (let i = navigation.length - 2; i >= 0; i--) {
       const { screen } = navigation[i];
       const { screen: next } = navigation[i + 1];
-      screen.navigationProvider.acceptNavigationChild(next);
+      getScreenRoutingNavigationContext(screen).provider.acceptNavigationChild(next);
     }
   }
 
-  private createNavigator(navigation: RouteNavigationItem<TQueryParams>[], pathLength = navigation.length): Navigator<TQueryParams> {
-    const pathContext = navigation.slice(1, pathLength).map(x => x.pathNode);
+  private createNavigator(navigation: RouteNavigationItem[], pathLength = navigation.length): Navigator {
+    const pathContext = navigation.slice(1, pathLength).map(x => x.pathname);
     return (dest: string) => ({
       go: queryParams => this.navigate(dest, queryParams, pathContext),
       getPathLocation: queryParams => this.getPathLocation(dest, queryParams, pathContext),
@@ -134,11 +138,11 @@ export default class Router<TQueryParams> {
     });
   }
 
-  private runMiddlewares(navigation: RouteNavigationItem<TQueryParams>[], path: string, params: TQueryParams, isNavError: boolean): boolean {
+  private runMiddlewares(navigation: RouteNavigationItem[], path: string, params: QueryParams, isNavError: boolean): boolean {
     if (!this.middlewares.length) return true;
     let shouldContinue = false;
 
-    const base: Partial<MiddlewareParams<TQueryParams>> = {
+    const base: Partial<MiddlewareParams> = {
       path,
       isNavError,
       navigate: (dest, queryParams) => this.navigate(dest, queryParams, []),
@@ -156,7 +160,7 @@ export default class Router<TQueryParams> {
           this.middlewares[index](getParams(index + 1));
         }
       }
-    } as MiddlewareParams<TQueryParams>);
+    } as MiddlewareParams);
 
     this.middlewares[0](getParams(0));
     return shouldContinue;

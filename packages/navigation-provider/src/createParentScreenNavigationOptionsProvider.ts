@@ -1,20 +1,21 @@
-import type { IScreen, IParentScreen, INavigationProvider, ScreenMatchResult } from "@vmmv/screen";
+import type { ScreenBase, ParentScreen, NavigationProvider, ScreenMatchResult } from "@vmmv/screen";
 import type { ActionExecutioner } from "@vmmv/common";
+import { getScreenRoutingNavigationContext } from "@vmmv/screen";
 
 export const createParentScreenNavigationOptionsProvider = <
-  TParentScreen extends IParentScreen<TChildScreen, TQueryParams>,
-  TChildScreen extends IScreen<TQueryParams>,
+  TParentScreen extends ParentScreen<TChildScreen>,
+  TChildScreen extends ScreenBase,
   TQueryParams,
 >(
   action: ActionExecutioner,
   parent: TParentScreen,
   children: TChildScreen[],
-  matchNavigation: (pathNode: string) => ScreenMatchResult,
-): INavigationProvider<TQueryParams> => ({
+  matchNavigation: (pathname: string) => ScreenMatchResult,
+): NavigationProvider => ({
   matchNavigation,
-  findNavigationChild: (pathNode) => {
+  findNavigationChild: (pathname) => {
     for (const child of children) {
-      const params = child.navigationProvider.matchNavigation(pathNode);
+      const params = getScreenRoutingNavigationContext(child).provider.matchNavigation(pathname);
       if (params) return [child, params];
     }
 

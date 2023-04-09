@@ -1,4 +1,4 @@
-export type { IRoutingAdapter } from "./IRoutingAdapter"
+export type { RoutingAdapter } from "./RoutingAdapter"
 export type { Middleware, MiddlewareParams } from "./Middleware"
 export type { PathContext } from "./PathContext"
 export type { RouteNavigationItem } from "./RouteNavigationItem"

@@ -5,7 +5,8 @@
   "types": "src/index.ts",
   "dependencies": {
     "@vmmv/common": "workspace:^0.0.0",
-    "@vmmv/router": "workspace:^0.0.0"
+    "@vmmv/router": "workspace:^0.0.0",
+    "@vmmv/screen": "workspace:^0.0.0"
   },
   "devDependencies": {
     "tsconfig": "workspace:*"

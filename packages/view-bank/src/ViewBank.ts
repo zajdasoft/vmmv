@@ -1,23 +1,23 @@
 import type { Registrable, Constructor } from "@vmmv/common";
 
 export type ViewProps<TViewModel extends Registrable> = { vm: TViewModel };
-export type View<TViewModel extends Registrable, TViewOutput> = (props: ViewProps<TViewModel>) => TViewOutput;
+export type ViewBase<TViewModel extends Registrable, TViewOutput> = (props: ViewProps<TViewModel>) => TViewOutput;
 export type ViewCondition<TViewModel extends Registrable> = (vm: TViewModel) => boolean;
 
 export type ViewRegistryEntry<TViewModel extends Registrable, TViewOutput> = {
-  view: View<TViewModel, TViewOutput>;
+  view: ViewBase<TViewModel, TViewOutput>;
   condition: ViewCondition<TViewModel>;
 }
 
 export type ViewRegistry<TViewModel extends Registrable, TViewOutput> = {
   conditions: Array<ViewRegistryEntry<TViewModel, TViewOutput>>;
-  default?: View<TViewModel, TViewOutput>;
+  default?: ViewBase<TViewModel, TViewOutput>;
 };
 
-export default class ViewBank<TViewOutput> {
+export class ViewBank<TViewOutput> {
   private registry = new Map<Constructor, ViewRegistry<Registrable, TViewOutput>>();
 
-  register<TViewModel extends Registrable>(model: Constructor<TViewModel>, view: View<TViewModel, TViewOutput>): void {
+  register<TViewModel extends Registrable>(model: Constructor<TViewModel>, view: ViewBase<TViewModel, TViewOutput>): void {
     const current = this.registry.get(model);
     if (current?.default) {
       throw new Error(`View model ${model.name} has already defined default view.`);
@@ -25,11 +25,11 @@ export default class ViewBank<TViewOutput> {
 
     this.registry.set(model, {
       conditions: current?.conditions ?? [],
-      default: view as View<Registrable, TViewOutput>,
+      default: view as ViewBase<Registrable, TViewOutput>,
     });
   }
 
-  addCondition<TViewModel extends Registrable>(model: Constructor<TViewModel>, view: View<TViewModel, TViewOutput>, condition: ViewCondition<TViewModel>): void {
+  addCondition<TViewModel extends Registrable>(model: Constructor<TViewModel>, view: ViewBase<TViewModel, TViewOutput>, condition: ViewCondition<TViewModel>): void {
     const current = this.registry.get(model);
     this.registry.set(model, {
       conditions: [

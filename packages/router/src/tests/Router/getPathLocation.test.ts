@@ -1,10 +1,10 @@
-import type { IRoutingAdapter } from "../../IRoutingAdapter";
+import type { RoutingAdapter } from "../../RoutingAdapter";
 import Router from "../../Router";
-import type { INavigationErrorScreen } from "@vmmv/screen";
+import type { NavigationErrorScreen } from "@vmmv/screen";
 
 describe("Router getPathLocation", () => {
   it("Constructs the path using the adapter.", () => {
-    const adapter: IRoutingAdapter<{}> = {
+    const adapter: RoutingAdapter = {
       parseDestination: jest.fn(),
       joinPathWithQueryParams: jest.fn(),
       wrapLinkPath: jest.fn(),
@@ -16,7 +16,7 @@ describe("Router getPathLocation", () => {
     (adapter.parseDestination as jest.Mock).mockReturnValue(["test", "path"]);
     (adapter.joinPathWithQueryParams as jest.Mock).mockReturnValue("/test/path?query=1");
 
-    const screen: INavigationErrorScreen<{}> = {
+    const screen: NavigationErrorScreen = {
       notifyNavigationFailed: jest.fn(),
       navigationProvider: ({
         acceptNavigationChild: jest.fn(),
@@ -32,8 +32,7 @@ describe("Router getPathLocation", () => {
     const router = new Router(screen, adapter);
 
     expect(router.getPathLocation("/test/path", {
-      query: 1
+      query: "1"
     }, ["current", "path"])).toBe("/test/path?query=1");
-    expect(1).toBe(1);
   });
 })

@@ -1,14 +1,15 @@
 import type { Navigator } from "@vmmv/screen";
 import type { RouteNavigationItem } from "./RouteNavigationItem";
+import type { QueryParams } from "@vmmv/screen";
 
-export type MiddlewareParams<TQueryParams> = {
+export type MiddlewareParams = {
   next(): void;
-  navigate(dest: string, queryParams: TQueryParams): void;
+  navigate(dest: string, queryParams: QueryParams): void;
   path: string;
   isNavError: boolean;
-  screens: RouteNavigationItem<TQueryParams>[];
-  navigator: Navigator<TQueryParams>,
-  queryParams: TQueryParams;
+  screens: RouteNavigationItem[];
+  navigator: Navigator,
+  queryParams: QueryParams;
 }
 
-export type Middleware<TQueryParams> = (params: MiddlewareParams<TQueryParams>) => void;
+export type Middleware = (params: MiddlewareParams) => void;

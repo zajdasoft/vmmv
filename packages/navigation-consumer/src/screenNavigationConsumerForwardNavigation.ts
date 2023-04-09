@@ -1,12 +1,12 @@
-import type { IScreen, IAcceptNavigation } from "@vmmv/screen";
+import type { ScreenBase, AcceptsNavigation } from "@vmmv/screen";
 import type { ScreenNavigationConsumerSetter } from "./ScreenNavigationConsumerSetter";
 
-export interface IScreenForwardingNavigation<TQueryParams> extends IScreen<TQueryParams> {
-  forwardNavigation: IAcceptNavigation<TQueryParams>;
+export interface IScreenForwardingNavigation extends ScreenBase {
+  forwardNavigation: AcceptsNavigation;
 }
 
-export function isScreenForwardingNavigation<TQueryParams>(screen: IScreen<TQueryParams>): screen is IScreenForwardingNavigation<TQueryParams> {
-  return typeof (screen as IScreenForwardingNavigation<TQueryParams>).forwardNavigation === "object";
+export function isScreenForwardingNavigation<TQueryParams>(screen: ScreenBase): screen is IScreenForwardingNavigation {
+  return typeof (screen as IScreenForwardingNavigation).forwardNavigation === "object";
 }
 
 export const screenNavigationConsumerForwardNavigation: ScreenNavigationConsumerSetter = (parent, ctx) => {

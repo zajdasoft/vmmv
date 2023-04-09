@@ -1,7 +1,7 @@
-import type { IScreen, PathParams } from "@vmmv/screen";
+import type { ScreenBase, PathParams } from "@vmmv/screen";
 
-export type RouteNavigationItem<TQueryParams> = {
-  pathNode: string;
+export type RouteNavigationItem = {
+  pathname: string;
   pathParams: PathParams;
-  screen: IScreen<TQueryParams>;
+  screen: ScreenBase;
 }

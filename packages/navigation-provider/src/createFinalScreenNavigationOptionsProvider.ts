@@ -1,14 +1,14 @@
-import type { IScreen, INavigationProvider, ScreenMatchResult } from "@vmmv/screen";
+import type { ScreenBase, NavigationProvider, ScreenMatchResult } from "@vmmv/screen";
 import type { ActionExecutioner } from "@vmmv/common";
 
 export const createFinalScreenNavigationOptionsProvider = <
-  TScreen extends IScreen<TQueryParams>,
+  TScreen extends ScreenBase,
   TQueryParams
 >(
   action: ActionExecutioner,
   parent: TScreen,
-  matchNavigation: (pathNode: string) => ScreenMatchResult,
-): INavigationProvider<TQueryParams> => ({
+  matchNavigation: (pathname: string) => ScreenMatchResult,
+): NavigationProvider => ({
   matchNavigation,
   findNavigationChild: () => undefined,
   acceptNavigationChild: () => {

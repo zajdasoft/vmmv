@@ -1,6 +1,3 @@
-import type { IScreen, INavigationContext } from "@vmmv/screen"
+import type { ScreenBase, ScreenNavigationContext } from "@vmmv/screen"
 
-export type ScreenNavigationConsumerSetter<
-  TScreen extends IScreen<TQueryParams>= IScreen<unknown>,
-  TQueryParams = unknown,
-> = (screen: TScreen, ctx: INavigationContext<TQueryParams>) => void;
+export type ScreenNavigationConsumerSetter = (screen: ScreenBase, ctx: ScreenNavigationContext) => void;

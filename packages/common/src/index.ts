@@ -9,3 +9,5 @@ export type OnlyOfType<T, K> = { [k in TypeKeys<T, K>]: K };
 export type OnlyProperty<T, K> = keyof OnlyOfType<T, K> & string;
 
 export type ActionExecutioner = (name: string, action: Action) => void;
+
+export * from "./silence";

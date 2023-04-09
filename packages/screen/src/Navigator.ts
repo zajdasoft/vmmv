@@ -1,8 +1,8 @@
-import type { INavigationRoute } from "./INavigationRoute";
+import type { NavigationRoute } from "./NavigationRoute";
 
-export type Navigator<TQueryParams> = (dest: string) => INavigationRoute<TQueryParams>;
+export type Navigator = (dest: string) => NavigationRoute;
 
-export function createInitialNavigator<TQueryParams>(): Navigator<TQueryParams> {
+export function createInitialNavigator(): Navigator {
   return () => ({
     go: () => {},
     getLinkLocation: () => "",
