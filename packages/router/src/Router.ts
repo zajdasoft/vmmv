@@ -1,8 +1,7 @@
 import type {
   ScreenNavigationContext,
   NavigationErrorScreen,
-  NavigationProvider,
-  ScreenBase,
+  ScreenDescriptor,
   Navigator,
   PathParams,
   QueryParams,
@@ -70,8 +69,8 @@ export default class Router {
       pathParams: {},
     }];
 
-    let current: ScreenSearchResult<ScreenBase> | undefined = [this.root, {}];
-    let provider: NavigationProvider = getScreenRoutingNavigationContext(this.root).provider;
+    let current: ScreenSearchResult<ScreenDescriptor> | undefined = [this.root, {}];
+    let { provider } = getScreenRoutingNavigationContext(this.root);
 
     for (let i = 0; i < nodes.length; i++) {
       if (!nodes[i]) continue;
@@ -119,13 +118,13 @@ export default class Router {
       getScreenRoutingNavigationContext(screen).consumer.consumeNavigation(this.createNavigationContext(navigation, i , pathParams));
     }
 
-    const { screen: finalScreen } = navigation[navigation.length - 1];
-    getScreenRoutingNavigationContext(finalScreen).provider.setNavigationFinalStep();
+    const { provider: finalProvider } = getScreenRoutingNavigationContext(navigation[navigation.length - 1].screen);
+    finalProvider.setNavigationFinalStep();
 
     for (let i = navigation.length - 2; i >= 0; i--) {
-      const { screen } = navigation[i];
+      const { provider } = getScreenRoutingNavigationContext(navigation[i].screen);
       const { screen: next } = navigation[i + 1];
-      getScreenRoutingNavigationContext(screen).provider.acceptNavigationChild(next);
+      provider.acceptNavigationChild(next);
     }
   }
 

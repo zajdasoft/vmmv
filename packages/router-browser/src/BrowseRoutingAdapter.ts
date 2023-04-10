@@ -1,6 +1,6 @@
 import type { RoutingAdapter, PathContext } from "@vmmv/router";
 import type { QueryParams } from "@vmmv/screen";
-import { getBrowserPathnames, getBrowserQueryParamsFromString } from "./browser";
+import { getBrowserPathnameNodes, getBrowserQueryParamsFromString } from "./browser";
 import { applyRelativePath } from "./applyRelativePath";
 import { queryParamsToURLSearchParams } from "./queryParamsToURLSearchParams";
 
@@ -28,7 +28,7 @@ export default class BrowseRoutingAdapter implements RoutingAdapter {
   }
 
   parseDestination(path: string, context: PathContext): string[] {
-    const parsed = getBrowserPathnames(path);
+    const parsed = getBrowserPathnameNodes(path);
     return applyRelativePath(context, parsed);
   }
 

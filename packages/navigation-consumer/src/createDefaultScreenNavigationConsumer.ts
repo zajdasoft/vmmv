@@ -1,4 +1,4 @@
-import type { ScreenBase } from "@vmmv/screen";
+import type { ScreenDescriptor } from "@vmmv/screen";
 import type { ScreenNavigationConsumerSetter } from "./ScreenNavigationConsumerSetter";
 import { createScreenNavigationConsumer } from "./createScreenNavigationConsumer";
 import { screenNavigationConsumerSetNavigator } from "./screenNavigationConsumerSetNavigator";
@@ -7,10 +7,10 @@ import { screenNavigationConsumerSetCurrentScreenPath } from "./screenNavigation
 import { screenNavigationConsumerForwardNavigation } from "./screenNavigationConsumerForwardNavigation";
 import type { ActionExecutioner } from "@vmmv/common";
 
-export const createDefaultScreenNavigationConsumer = <TScreen extends ScreenBase>(
+export const createDefaultScreenNavigationConsumer = <TScreen extends ScreenDescriptor>(
   action: ActionExecutioner,
   parent: TScreen,
-  ...setters: ScreenNavigationConsumerSetter[]
+  ...setters: ScreenNavigationConsumerSetter<TScreen>[]
 ) => createScreenNavigationConsumer(
   action,
   parent,

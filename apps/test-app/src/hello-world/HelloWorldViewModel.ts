@@ -1,8 +1,11 @@
-import { RoutingNavigationContext, ScreenRoutingContext } from "@vmmv/screen";
-import { createScreenRoutingContext } from "@vmmv/react-mobx/src/createScreenRoutingContext";
+import { AddDefaultView, FinalScreen } from "@vmmv/react-mobx";
+import { HelloWorldView } from "./HelloWorldView";
 
-export class HelloWorldViewModel {
-  [ScreenRoutingContext]: RoutingNavigationContext = createScreenRoutingContext(this);
+@AddDefaultView(HelloWorldView)
+export class HelloWorldViewModel extends FinalScreen {
   pathname = () => "hello-world";
 
+  constructor() {
+    super();
+  }
 }

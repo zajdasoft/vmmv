@@ -1,10 +1,10 @@
-import type { Registrable } from "@vmmv/common"
+import type { Registrable } from "./index"
 export type Deactivate = () => void;
 
-export interface IActivate {
+export interface Activate {
   activate(): Deactivate | undefined;
 }
 
-export function canActivate(vm: Registrable): vm is IActivate {
+export function canActivate(vm: Registrable): vm is Activate {
   return "activate" in vm && typeof vm.activate === "function";
 }

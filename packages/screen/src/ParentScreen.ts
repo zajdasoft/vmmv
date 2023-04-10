@@ -1,5 +1,5 @@
-import type { ScreenBase } from "./ScreenBase";
+import type { ScreenDescriptor } from "./ScreenDescriptor";
 
-export interface ParentScreen<TChildren extends ScreenBase> extends ScreenBase {
+export interface ParentScreen<TChildren extends ScreenDescriptor> extends ScreenDescriptor {
   child: TChildren | null;
 }

@@ -1,15 +1,15 @@
-import type { ScreenBase } from "@vmmv/screen";
+import type { ScreenDescriptor } from "@vmmv/screen";
 import type { ScreenNavigationConsumerSetter } from "./ScreenNavigationConsumerSetter";
 
-export interface IScreenWithCurrentScreenPath extends ScreenBase {
-  currentScreenPath: ScreenBase[];
+export interface IScreenWithCurrentScreenPath extends ScreenDescriptor {
+  currentScreenPath: ScreenDescriptor[];
 }
 
-export function isScreenWithCurrentScreenPath(screen: ScreenBase): screen is IScreenWithCurrentScreenPath {
+export function isScreenWithCurrentScreenPath(screen: ScreenDescriptor): screen is IScreenWithCurrentScreenPath {
   return Array.isArray((screen as IScreenWithCurrentScreenPath).currentScreenPath);
 }
 
-export const screenNavigationConsumerSetCurrentScreenPath: ScreenNavigationConsumerSetter = (parent, ctx) => {
+export const screenNavigationConsumerSetCurrentScreenPath: ScreenNavigationConsumerSetter<ScreenDescriptor> = (parent, ctx) => {
   if (isScreenWithCurrentScreenPath(parent))
     parent.currentScreenPath = ctx.getScreenPath();
 };

@@ -1,9 +1,8 @@
-import type { ScreenBase, NavigationProvider, ScreenMatchResult } from "@vmmv/screen";
+import type { ScreenDescriptor, NavigationProvider, ScreenMatchResult } from "@vmmv/screen";
 import type { ActionExecutioner } from "@vmmv/common";
 
-export const createFinalScreenNavigationOptionsProvider = <
-  TScreen extends ScreenBase,
-  TQueryParams
+export const createFinalScreenNavigationProvider = <
+  TScreen extends ScreenDescriptor
 >(
   action: ActionExecutioner,
   parent: TScreen,

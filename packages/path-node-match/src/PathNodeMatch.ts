@@ -52,7 +52,7 @@ export default class PathNodeMatch {
   match(pathname: string): ScreenMatchResult {
     const result = this.regex.exec(pathname);
     if (!result) return undefined;
-    return result.groups;
+    return result.groups ?? {};
   }
 
   build(params: PathParams) {

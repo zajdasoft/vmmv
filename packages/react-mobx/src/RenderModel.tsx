@@ -1,22 +1,21 @@
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import type { Registrable } from "@vmmv/common";
-import { defaultViewBank } from "./ViewBank";
-import { getInstanceView } from "@vmmv/view-bank/src/getInstanceView";
-import { canActivate } from "@vmmv/view-bank";
+import { canActivate } from "@vmmv/common";
+import { getInstanceView } from "@vmmv/view-bank";
+import { defaultViewBank } from "./viewBank";
 import type { View } from "./View";
 
 export type RenderModelProps<TViewModel extends object> = {
   vm: TViewModel | null | undefined;
 }
 
+const noop = () => {};
+
 const useLifeCycle = (vm: Registrable | undefined | null) => {
   useEffect(() => {
-    if (!vm || !canActivate(vm)) {
-      return () => {};
-    }
-
-    return vm.activate() ?? (() => {});
+    if (!vm || !canActivate(vm)) return noop;
+    return vm.activate() ?? noop;
   }, [vm]);
 }
 

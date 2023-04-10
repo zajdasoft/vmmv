@@ -1,16 +1,15 @@
 import type { ScreenNavigationConsumerSetter } from "./ScreenNavigationConsumerSetter";
-import type { ScreenBase } from "@vmmv/screen";
+import type { ScreenDescriptor } from "@vmmv/screen";
 
-export type ParamsSetter<TScreen extends ScreenBase> = (screen: TScreen, value: string) => void;
-export type ParamsSetterCollection<TScreen extends ScreenBase> = Record<string, ParamsSetter<TScreen> | {
+export type ParamsSetter<TScreen extends ScreenDescriptor> = (screen: TScreen, value: string) => void;
+export type ParamsSetterCollection<TScreen extends ScreenDescriptor> = Record<string, ParamsSetter<TScreen> | {
   setter: ParamsSetter<TScreen>;
   default: string;
 }>
 
 export const createScreenNavigatorConsumerPathParams = <
-  TScreen extends ScreenBase,
-  TQueryParams,
->(setters: ParamsSetterCollection<TScreen>): ScreenNavigationConsumerSetter<TScreen, TQueryParams> => (screen, ctx) => {
+  TScreen extends ScreenDescriptor,
+>(setters: ParamsSetterCollection<TScreen>): ScreenNavigationConsumerSetter<TScreen> => (screen, ctx) => {
   const params = ctx.getPathParams();
   Object.keys(setters).forEach(key => {
     const setter = setters[key];

@@ -1,9 +1,9 @@
-import type { ScreenBase } from "./ScreenBase";
+import type { ScreenDescriptor } from "./ScreenDescriptor";
 
-export interface NavigationErrorScreen extends ScreenBase {
+export interface NavigationErrorScreen extends ScreenDescriptor {
   notifyNavigationFailed(path: string): void;
 }
 
-export function isNavigationErrorScreen(screen: ScreenBase): screen is NavigationErrorScreen {
+export function isNavigationErrorScreen(screen: ScreenDescriptor): screen is NavigationErrorScreen {
   return typeof (screen as NavigationErrorScreen).notifyNavigationFailed === "function";
 }

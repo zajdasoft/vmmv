@@ -1,6 +1,5 @@
 import type { Registrable } from "@vmmv/common"
-import type { ViewBank } from "./ViewBank";
-import type { ViewBase } from "./ViewBank";
+import type { ViewBank, ViewBase } from "./ViewBank";
 
 export const getInstanceView = <TViewModel extends Registrable, TViewOutput>(vm: Registrable, bank: ViewBank<TViewOutput>): ViewBase<TViewModel, TViewOutput> | undefined => {
   const views = bank.get(vm);

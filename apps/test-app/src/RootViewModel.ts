@@ -1,15 +1,14 @@
-import { AddDefaultView, Screen } from "@vmmv/react-mobx";
+import { AddDefaultView } from "@vmmv/react-mobx";
 import { RootView } from "./RootView";
-import { observable } from "mobx";
+import { RootScreen } from "@vmmv/react-mobx";
+import { HelloWorldViewModel } from "./hello-world/HelloWorldViewModel";
+import { makeObservable } from "mobx"
 
 @AddDefaultView(RootView)
-export default class RootViewModel extends Screen {
-  @observable child: Screen | null = null;
-  children: Screen[] = [];
-
+export default class RootViewModel extends RootScreen {
   constructor() {
-    super();
-    this.init();
+    super([new HelloWorldViewModel()]);
+    makeObservable(this);
   }
 
   notifyNavigationFailed(path: string): void {

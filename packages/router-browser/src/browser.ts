@@ -11,4 +11,4 @@ export const getBrowserQueryParamsFromString = (params: string) => {
   return ret;
 }
 
-export const getBrowserPathnames = (path: string) => path.trim().split("?")[0].split("/");
+export const getBrowserPathnameNodes = (path: string) => path.trim().split("?")[0].split("/");

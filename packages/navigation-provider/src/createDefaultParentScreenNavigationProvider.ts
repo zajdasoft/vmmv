@@ -1,19 +1,18 @@
-import type { ScreenBase, NavigationProvider, ParentScreen } from "@vmmv/screen";
+import type { ScreenDescriptor, NavigationProvider, ParentScreen } from "@vmmv/screen";
 import type { ActionExecutioner } from "@vmmv/common";
-import { createParentScreenNavigationOptionsProvider } from "./createParentScreenNavigationOptionsProvider";
+import { createParentScreenNavigationProvider } from "./createParentScreenNavigationProvider";
 import { createDefaultMatchNavigation } from "./createDefaultMatchNavigation";
 
-export const createDefaultParentScreenNavigationOptionsProvider = <
+export const createDefaultParentScreenNavigationProvider = <
   TParentScreen extends ParentScreen<TChildScreen>,
-  TChildScreen extends ScreenBase,
-  TQueryParams,
+  TChildScreen extends ScreenDescriptor,
 >(
   action: ActionExecutioner,
   parent: TParentScreen,
   children: TChildScreen[],
   screenDescriptivePathnameProvider: () => string,
 ): NavigationProvider =>
-  createParentScreenNavigationOptionsProvider(
+  createParentScreenNavigationProvider(
     action,
     parent,
     children,

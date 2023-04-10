@@ -1,3 +1,3 @@
-import type { ScreenBase, ScreenNavigationContext } from "@vmmv/screen"
+import type { ScreenDescriptor, ScreenNavigationContext } from "@vmmv/screen"
 
-export type ScreenNavigationConsumerSetter = (screen: ScreenBase, ctx: ScreenNavigationContext) => void;
+export type ScreenNavigationConsumerSetter<TScreen extends ScreenDescriptor> = (screen: TScreen, ctx: ScreenNavigationContext) => void;
